@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Home,
@@ -26,17 +26,20 @@ import {
   User,
   Sun,
   Moon,
+  ChevronDown,
+  ChevronRight,
+  LucideIcon,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
-const MenuItem = ({ icon: Icon, label, to }: { icon: any; label: string; to: string }) => (
+const MenuItem = ({ icon: Icon, label, to }: { icon: LucideIcon; label: string; to: string }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+      `flex items-center space-x-3 px-4 py-3 rounded-lg transition-transform transform hover:scale-105 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 ${
         isActive
           ? 'bg-blue-600/10 text-blue-500'
-          : 'text-gray-400 hover:bg-gray-800/50 hover:text-white'
+          : 'text-gray-400 hover:text-white'
       }`
     }
   >
@@ -45,14 +48,22 @@ const MenuItem = ({ icon: Icon, label, to }: { icon: any; label: string; to: str
   </NavLink>
 );
 
-const MenuSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <div className="mb-6">
-    <h3 className="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-      {title}
-    </h3>
-    <div className="space-y-1">{children}</div>
-  </div>
-);
+const MenuSection = ({ title, children }: { title: string; children: React.ReactNode }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="mb-6">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-white transition-colors"
+      >
+        {title}
+        {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+      </button>
+      {isOpen && <div className="space-y-1">{children}</div>}
+    </div>
+  );
+};
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
